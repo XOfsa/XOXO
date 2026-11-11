@@ -139,7 +139,8 @@ footer p{color:#bbb;margin:8px 0}
             <label>Alto<input type="number" id="alto" value="90" min="20" max="250"></label>
           </div>
         </fieldset>
-        <fieldset><legend>Marco</legend><div class="chips" id="marco"><input type="radio" name="marco" id="m1" value="Con burlete (marco negro)" checked><label for="m1"><span class="dot" style="background:#000"></span>Con burlete (marco negro)</label><input type="radio" name="marco" id="m0" value="Sin burlete"><label for="m0">Sin burlete</label></div></fieldset>
+        <fieldset><legend>Marco</legend><div class="chips" id="marco"><input type="radio" name="marco" id="m1" value="Con burlete" checked><label for="m1">Con burlete</label><input type="radio" name="marco" id="m0" value="Sin burlete"><label for="m0">Sin burlete</label></div><div id="w-burlete" style="margin-top:12px"><div style="font-weight:500;font-size:15px;margin-bottom:6px">Color del burlete</div><div class="chips"><input type="radio" name="burcolor" id="bc0" value="Negro" data-c="#000000" checked><label for="bc0"><span class="dot" style="background:#000000"></span>Negro</label><input type="radio" name="burcolor" id="bc1" value="Dorado" data-c="#D4AF37"><label for="bc1"><span class="dot" style="background:#D4AF37"></span>Dorado</label><input type="radio" name="burcolor" id="bc2" value="Blanco" data-c="#FFFFFF"><label for="bc2"><span class="dot" style="background:#FFFFFF"></span>Blanco</label><input type="radio" name="burcolor" id="bc3" value="Rosado" data-c="#F4A6C0"><label for="bc3"><span class="dot" style="background:#F4A6C0"></span>Rosado</label><input type="radio" name="burcolor" id="bc4" value="Gris" data-c="#8A8F98"><label for="bc4"><span class="dot" style="background:#8A8F98"></span>Gris</label><input type="radio" name="burcolor" id="bc5" value="Azul" data-c="#2F6BFF"><label for="bc5"><span class="dot" style="background:#2F6BFF"></span>Azul</label></div></div></fieldset>
+        <fieldset><legend>Grosor del espejo</legend><div class="chips"><input type="radio" name="grosor" id="g3" value="3 mm" checked><label for="g3">3 mm</label><input type="radio" name="grosor" id="g4" value="4 mm"><label for="g4">4 mm</label></div></fieldset>
         <fieldset><legend>Luz LED</legend>
           <div class="chips">
             <input type="radio" name="led" id="led0" value="Sin LED" checked><label for="led0">Sin LED</label>
@@ -207,13 +208,13 @@ footer p{color:#bbb;margin:8px 0}
   <div class="wrap">
     <div class="logo"><span class="x1">X</span><span class="o1">O</span><span class="x2">X</span><span class="o2">O</span></div>
     <p>Espejos a medida y de diseño. Envíos a todo el país.</p>
-    <p><a href="https://wa.me/5493704416058">WhatsApp: 370 441-6058</a> · <a href="https://wa.me/5493704784406">370 478-4406</a> · <a href="https://instagram.com/XO.fsa" target="_blank" rel="noopener">Instagram: @XO.fsa</a></p>
+    <p><a href="https://wa.me/5493704784406">WhatsApp: 370 478-4406</a> · <a href="https://wa.me/5493704416058">370 441-6058</a> · <a href="https://instagram.com/XO.fsa" target="_blank" rel="noopener">Instagram: @XO.fsa</a></p>
   </div>
 </footer>
 
 <script>
 (function(){
-  var WA = "5493704416058"; // WhatsApp de XOXO
+  var WA = "5493704784406"; // WhatsApp de XOXO
   var $ = function(id){return document.getElementById(id)};
   var E = function(rx,ry,cx,cy){return '<ellipse cx="'+cx+'" cy="'+cy+'" rx="'+rx+'" ry="'+ry+'"/>'};
   var SH = {
@@ -259,7 +260,7 @@ footer p{color:#bbb;margin:8px 0}
   function update(){
     var f=val("forma").value, m=val("marco"), w=Math.max(20,+$("ancho").value||60), h=Math.max(20,+$("alto").value||90);
     if(f==="Redondo"){h=w}
-    var con=m.value.indexOf("Con")===0; $("w-otra").hidden=(f!=="Otra forma");
+    var con=m.value.indexOf("Con")===0; $("w-otra").hidden=(f!=="Otra forma"); $("w-burlete").hidden=!con; var bcol=val("burcolor"), fc=bcol?bcol.dataset.c:"#000000", gr=val("grosor").value; var marcoTxt=con?"con burlete "+(bcol?bcol.value.toLowerCase():"negro"):"sin burlete";
     // LED
     var led=val("led").value==="Con LED", tipo=val("ledtipo"), tono=null, ledTxt="", glow="";
     $("w-tipo").hidden=!led;
@@ -272,10 +273,10 @@ footer p{color:#bbb;margin:8px 0}
     }
     var k=Math.min(240/h,240/w), pw=Math.round(w*k), ph=Math.round(h*k);
     var p=$("prev");
-    p.innerHTML=svg(f,pw,ph,con?{frame:"#000",sw:16,edge:"#555"}:{edge:"#cfd3d8"});
+    p.innerHTML=svg(f,pw,ph,con?{frame:fc,sw:16,edge:(fc==="#FFFFFF"?"#999":"#555")}:{edge:"#cfd3d8"});
     p.firstChild.style.filter = led ? "drop-shadow(0 0 10px "+glow+") drop-shadow(0 0 26px "+glow+")" : "none";
     var otra=$("otraforma").value.trim(); var txt=(f==="Redondo")?"Redondo de "+w+" cm de diámetro":(f==="Otra forma"?"Forma personalizada"+(otra?" ("+otra+")":"")+" de "+w+" × "+h+" cm":f+" de "+w+" × "+h+" cm");
-    txt+=", "+m.value.toLowerCase()+(led?". "+ledTxt:". Sin luz LED");
+    txt+=", "+marcoTxt+", vidrio de "+gr+(led?". "+ledTxt:". Sin luz LED");
     $("resumen").textContent=txt;
     var msg="Hola XOXO, quiero un presupuesto: "+txt+"."+($("ciudad").value?" Envío a: "+$("ciudad").value+".":"")+($("nota").value?" Nota: "+$("nota").value:"");
     $("enviar").href="https://wa.me/"+WA+"?text="+encodeURIComponent(msg);
